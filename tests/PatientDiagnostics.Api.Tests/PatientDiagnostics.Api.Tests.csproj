@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PatientDiagnostics.Api\PatientDiagnostics.Api.csproj" />
+    <ProjectReference Include="..\..\src\PatientDiagnostics.Contracts\PatientDiagnostics.Contracts.csproj" />
+  </ItemGroup>
+</Project>

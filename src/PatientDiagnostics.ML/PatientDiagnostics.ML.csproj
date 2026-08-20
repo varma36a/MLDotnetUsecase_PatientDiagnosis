@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PatientDiagnostics.Application\PatientDiagnostics.Application.csproj" />
+    <ProjectReference Include="..\PatientDiagnostics.Domain\PatientDiagnostics.Domain.csproj" />
+  </ItemGroup>
+</Project>

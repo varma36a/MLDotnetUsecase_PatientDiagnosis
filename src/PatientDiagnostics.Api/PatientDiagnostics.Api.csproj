@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <UserSecretsId>patientdiagnostics-api-phase1</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PatientDiagnostics.Application\PatientDiagnostics.Application.csproj" />
+    <ProjectReference Include="..\PatientDiagnostics.Contracts\PatientDiagnostics.Contracts.csproj" />
+    <ProjectReference Include="..\PatientDiagnostics.Infrastructure\PatientDiagnostics.Infrastructure.csproj" />
+    <ProjectReference Include="..\PatientDiagnostics.ML\PatientDiagnostics.ML.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="PatientDiagnostics.Api.Tests" />
+    <InternalsVisibleTo Include="PatientDiagnostics.Integration.Tests" />
+  </ItemGroup>
+</Project>

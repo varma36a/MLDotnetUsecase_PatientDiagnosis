@@ -1,0 +1,4 @@
+@PatientDiagnostics.Api_HostAddress = http://localhost:5080
+
+GET {{PatientDiagnostics.Api_HostAddress}}/api/v1/platform/info
+Accept: application/json

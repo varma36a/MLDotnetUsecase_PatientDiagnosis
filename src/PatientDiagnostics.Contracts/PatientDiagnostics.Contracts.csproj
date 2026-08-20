@@ -1,0 +1,3 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Public API contracts. No domain or infrastructure dependencies. -->
+</Project>
