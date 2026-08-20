@@ -6,6 +6,101 @@ Clinical decision-support platform for **diabetes risk scoring**. This is not an
 
 Inspected SDK on this machine: **.NET 8.0.100**. The solution targets `net8.0`. .NET 10 is not installed here, so it is not used.
 
+## Setup and run
+
+Phase 1 does not need SQL Server, Redis, or Azure. The API host and tests run with the .NET SDK only.
+
+### 1. Prerequisites
+
+Install the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0), then confirm:
+
+```bash
+dotnet --list-sdks
+```
+
+You need **8.0.100 or later 8.0.x**. Git is required only if you clone the repository.
+
+### 2. Clone the repository
+
+```bash
+git clone https://github.com/varma36a/MLDotnetUsecase_PatientDiagnosis.git
+cd MLDotnetUsecase_PatientDiagnosis
+```
+
+### 3. Trust the HTTPS development certificate (once per machine)
+
+```bash
+dotnet dev-certs https --trust
+```
+
+On macOS this may prompt for your password. Skip this step if you only run the HTTP profile.
+
+### 4. Restore, build, and test
+
+```bash
+dotnet restore PatientDiagnostics.sln
+dotnet build PatientDiagnostics.sln --configuration Release
+dotnet test PatientDiagnostics.sln --configuration Release
+```
+
+All tests should pass. Phase 1 currently has 21 tests.
+
+### 5. Run the API
+
+HTTPS (Swagger at `https://localhost:7080/swagger`):
+
+```bash
+dotnet run --project src/PatientDiagnostics.Api --launch-profile https
+```
+
+HTTP only (`http://localhost:5080/swagger`):
+
+```bash
+dotnet run --project src/PatientDiagnostics.Api --launch-profile http
+```
+
+### 6. Verify the service
+
+In another terminal:
+
+```bash
+curl -k https://localhost:7080/api/v1/platform/info
+```
+
+Or, if you used the HTTP profile:
+
+```bash
+curl http://localhost:5080/api/v1/platform/info
+```
+
+Expected JSON includes `serviceName`, `environment`, `apiVersion`, `defaultModelName`, `serverTimeUtc`, and a clinical disclaimer. This endpoint is a composition-root probe, not a clinical API. Patient, observation, and prediction routes are added in later phases.
+
+### Configuration
+
+`DiagnosticsPlatform` is validated at startup (`ValidateOnStart`). A missing `ServiceName` fails the host instead of a later request.
+
+| Setting | Default | File |
+| --- | --- | --- |
+| `DiagnosticsPlatform:ServiceName` | `PatientDiagnostics` | `src/PatientDiagnostics.Api/appsettings.json` |
+| `DiagnosticsPlatform:DefaultModelName` | `diabetes-risk` | same |
+| `DiagnosticsPlatform:ApiVersion` | `v1` | same |
+
+Secrets stay out of source control. Use user secrets, environment variables, or Key Vault (Phase 16). The API project already has a `UserSecretsId`:
+
+```bash
+dotnet user-secrets set "DiagnosticsPlatform:ServiceName" "PatientDiagnostics" --project src/PatientDiagnostics.Api
+```
+
+### Troubleshooting
+
+| Problem | What to do |
+| --- | --- |
+| `SDK not found` / wrong target framework | Install .NET 8 SDK and confirm `global.json` roll-forward with `dotnet --list-sdks` |
+| HTTPS browser warning | Run `dotnet dev-certs https --trust`, or use `--launch-profile http` |
+| Port 7080 or 5080 already in use | Stop the other process, or change URLs in `src/PatientDiagnostics.Api/Properties/launchSettings.json` |
+| Restore cannot reach nuget.org | Check network access to `https://api.nuget.org/v3/index.json` |
+| Options validation exception at startup | Ensure `appsettings.json` contains a non-empty `DiagnosticsPlatform:ServiceName` |
+
 ## Architecture
 
 ```text
@@ -68,30 +163,6 @@ infra/bicep/
 docker/
 docs/
 ```
-
-## Prerequisites
-
-- .NET SDK 8.0.100 or later 8.0.x (`dotnet --list-sdks`)
-- SQL Server / Azure SQL, Redis, Azure Service Bus — **not required for Phase 1**
-
-## Local development
-
-```bash
-dotnet restore PatientDiagnostics.sln
-dotnet build PatientDiagnostics.sln --configuration Release
-dotnet test PatientDiagnostics.sln --configuration Release
-dotnet run --project src/PatientDiagnostics.Api
-```
-
-Then open `https://localhost:7080/swagger` or `GET /api/v1/platform/info`.
-
-That endpoint is a composition-root probe. Clinical routes start in later phases.
-
-## Configuration
-
-`DiagnosticsPlatform` is validated at startup (`ValidateOnStart`). Missing `ServiceName` fails the host instead of a later request.
-
-Secrets stay out of source control. Use user secrets, environment variables, or Key Vault (Phase 16). The API project already has a `UserSecretsId`.
 
 ## Phase roadmap
 
